@@ -1,0 +1,14 @@
+# @format
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spring-devops-pod
+  labels:
+    app: spring-devops-pod
+spec:
+  containers:
+    - name: spring-devops
+      image: fhcebihi/spring_devops_image
+      ports:
+        - containerPort: 9095
