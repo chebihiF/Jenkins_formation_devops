@@ -5,6 +5,10 @@ pipeline {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "maven3"
     }
+    
+    environment { 
+        DOCKERHUB_CREDENTIALS = credentials('DOCKER_HUB_PAT') 
+    }
 
     stages {
         stage('SCM') {
@@ -14,6 +18,13 @@ pipeline {
                 
             }
         }
+        
+        /*stage("Build Maven") {
+            steps {
+                sh 'mvn package'
+            }
+        }*/
+        
         stage('Docker Build') {
             steps {
                 sh 'docker --version'
@@ -24,9 +35,7 @@ pipeline {
         
         stage('LogIn Docker') {
             steps {
-                withCredentials([string(credentialsId: 'DOCKER_HUB_PAT', variable: 'PASSWORD')]) {
-                    sh 'docker login -u fhcebihi -p $PASSWORD'
-                }
+                sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
             }
         }
         
