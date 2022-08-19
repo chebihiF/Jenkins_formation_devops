@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "maven3"
+    }
+    
+    environment { 
+        DOCKERHUB_CREDENTIALS = credentials('DOCKER_HUB_PAT') 
+    }
+
+    stages {
+        stage('SCM') {
+            steps {
+                git credentialsId: 'github-ssh-credentials', url: 'git@github.com:chebihiF/Spring_boot_app_devops.git'
+                echo "fetch repo"
+                
+            }
+        }
+        
+        /*stage("Build Maven") {
+            steps {
+                sh 'mvn package'
+            }
+        }*/
+        
+        stage('Docker Build') {
+            steps {
+                sh 'docker --version'
+                sh 'docker build -t spring_devops_image .'
+                sh 'docker images'
+            }
+        }
+        
+        stage('LogIn Docker') {
+            steps {
+                sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
+            }
+        }
+        
+        stage('Push Docker') {
+            steps {
+            
+                sh 'docker tag spring_devops_image fhcebihi/spring_devops_image'
+                sh 'docker push fhcebihi/spring_devops_image'
+            }
+        }
+        stage('Deploy Kubernities') {
+            steps {
+            
+                echo "deploy kubernities"
+            }
+        }
+    }
+}
