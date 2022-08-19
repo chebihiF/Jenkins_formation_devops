@@ -1,0 +1,12 @@
+# @format
+
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: spring-devops-service
+  labels:
+    app: spring-devops-service
+spec:
+  type: NodePort
+  selector:
+    app: spring-devops-pod
